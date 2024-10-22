@@ -1,0 +1,23 @@
+[
+  {
+    "cardId": 1,
+    "price": 12644,
+    "totalCount": 1,
+    "totalPrice": 12644,
+    "img": "hood1.png"
+  },
+  {
+    "cardId": 2,
+    "price": 12644,
+    "totalCount": 1,
+    "totalPrice": 12644,
+    "img": "hood2.png"
+  },
+  {
+    "cardId": 3,
+    "price": 12644,
+    "totalCount": 1,
+    "totalPrice": 12644,
+    "img": "hood3.png"
+  }
+]

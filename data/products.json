@@ -1,0 +1,34 @@
+[
+  {
+    "cardId": 1,
+    "price": "6 848 ₽ – 56 584 ₽",
+    "description": "Вытяжное устройство для механической системы вентиляции",
+    "priceInEuro": "77.60 € – 643.86 €",
+    "partNumber": "BXC",
+    "img": "hoodbig1.png"
+  },
+  {
+    "cardId": 2,
+    "price": "6 848 ₽ – 56 584 ₽",
+    "description": "Многофункциональное вытяжное устройство для естественной и гибридной вентиляции",
+    "priceInEuro": "77.60 € – 643.86 €",
+    "partNumber": "G2H",
+    "img": "hoodbig2.png"
+  },
+  {
+    "cardId": 3,
+    "price": "6 848 ₽ – 56 584 ₽",
+    "description": "Вытяжное устройство для механической системы вентиляции",
+    "priceInEuro": "77.60 € – 643.86 €",
+    "partNumber": "GHN",
+    "img": "hoodbig3.png"
+  },
+  {
+    "cardId": 4,
+    "price": "6 848 ₽ – 56 584 ₽",
+    "description": "Вытяжное устройство для механической системы вентиляции",
+    "priceInEuro": "77.60 € – 643.86 €",
+    "partNumber": "TDA",
+    "img": "hoodbig4.png"
+  }
+]
