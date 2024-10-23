@@ -7,6 +7,6 @@ export default defineNuxtConfig({
     storesDirs: ["./stores/**", "./custom-folder/stores/**"],
   },
   imports: {
-    dirs: ["stores"],
+    dirs: ["stores", "utils"],
   },
 });

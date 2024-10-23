@@ -1,23 +1,50 @@
 import { defineStore } from "pinia";
-import basket from "@/data/basket.json";
+import cart from "@/data/basket.json";
 import products from "@/data/products.json";
 
 export const useProductStore = defineStore("ProductStore", {
   state: () => {
     return {
-      basket,
+      cart,
       products,
     };
   },
   getters: {
-    getBasket(state) {
-      return state.basket;
+    cartItems(state) {
+      return state.cart;
     },
-    getProducts(state) {
+    viewedProducts(state) {
       return state.products;
+    },
+    totalSum(state) {
+      let i = 0;
+      return state.cart.reduce(function (accumulator, currentValue) {
+        return accumulator + currentValue.price * currentValue.totalCount;
+      }, i);
+    },
+    totalCount(state) {
+      let i = 0;
+      return state.cart.reduce(function (accumulator, currentValue) {
+        return accumulator + currentValue.totalCount;
+      }, i);
     },
   },
   actions: {
-    addItemToBasket(payload) {},
+    addItemToCart(item) {
+      item.totalCount++;
+      item.totalPrice = item.price * item.totalCount;
+    },
+    removeItemFromCart(item) {
+      item.totalCount =
+        item.totalCount <= 1 ? item.totalCount : item.totalCount - 1;
+      item.totalPrice = item.price * item.totalCount;
+    },
+    cleanTheCart() {
+      console.log(this.cart);
+      this.cart = [];
+    },
+    removePosition(position) {
+      this.cart = this.cart.filter((item) => item.cardId !== position.cardId);
+    },
   },
 });

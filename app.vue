@@ -1,83 +1,89 @@
 <template>
   <div class="wrapper">
-    <TheHeader :itemsCount="getTotalCount" :itemsTotalPrice="getTotalSum" />
-    <div class="wrapper__content">
-      <div class="wrapper__basket-contnet">
-        <div class="wrapper__basket-header">
-          <div class="wrapper__breadcrumbs">
-            <div class="wrapper__breadcrumbs-text">Главная</div>
-            <img src="/images/arrow.svg" />
-            <div
-              class="wrapper__breadcrumbs-text wrapper__breadcrumbs-text--active"
-            >
-              Корзина
+    <TheHeader :productsCount="totalCount" :productsTotalPrice="totalSum" />
+
+    <div class="cart-wrapper">
+      <div class="cart">
+        <ul class="breadcrumbs">
+          <li class="breadcrumbs-text">Главная</li>
+          <li class="breadcrumbs-text breadcrumbs-text--active">Корзина</li>
+        </ul>
+
+        <div class="cart__header">
+          <div class="cart__wrap">
+            <h1 class="title">Ваша корзина</h1>
+            <div class="cart__count">
+              {{ totalCount }}
+              {{ declineNoun(productsCount, ["товар", "товара", "товаров"]) }}
             </div>
           </div>
-          <div class="title">
-            <div class="title__items--flex">
-              <h1 class="title__items---header-typography">Ваша корзина</h1>
-              <div class="title__items--count-typography">
-                {{ getTotalCount }} {{ getNoun }}
+
+          <button
+            type="button"
+            class="cart__items--clean"
+            @click="cleanTheCart"
+          >
+            Очистить корзину
+          </button>
+        </div>
+
+        <TheItem v-for="card in cartItems" :item="card"> </TheItem>
+
+        <!-- Сделать чекбокс обернуть в лабел для курсора везде +++++++-->
+        <div class="cart___installation">
+          <input
+            type="checkbox"
+            id="installation"
+            name="installation"
+            v-model="isInstallationApproved"
+            :class="changeClass"
+            @click="changeInstallationStatus"
+          />
+
+          <label for="installation" class="cart__installation-label">
+            <img class="cart__installation-img" src="/images/instruments.svg" />
+
+            <div class="cart__installation-typography">
+              <div>Установка</div>
+              <div class="cart__installation-typography--grey">
+                Отметьте, если Вам необходима консультация профессионала по
+                монтажу выбранных товаров.
               </div>
             </div>
-
-            <div class="title__items--clean-typography">Очистить корзину</div>
-          </div>
-        </div>
-
-        <!-- PINIAUSAGE -->
-
-        <TheItem
-          v-for="card in getBasketFromStore"
-          :price="card.totalPrice"
-          :pricePerItem="card.price"
-          :image="card.img"
-          @get-increased="getIncreasedCount, getTotalPerCardByIncrease(card)"
-          @get-decreased="getDecreasedCount, getTotalPerCardByDecrease(card)"
-        >
-        </TheItem>
-        <div class="wrapper__item-installation">
-          <button
-            @click="changeInstallationStatus"
-            :class="changeClass"
-          ></button>
-          <img
-            class="wrapper__installation-img"
-            src="/images/instruments.svg"
-          />
-          <div class="wrapper__installation-typography">
-            <div>Установка</div>
-            <div class="wrapper__installation-typography--grey">
-              Отметьте, если Вам необходима консультация профессионала по
-              монтажу выбранных товаров.
-            </div>
-          </div>
+          </label>
         </div>
       </div>
-      <div class="wrapper__total">
-        <TheSubtotal
-          :installation="isInstallationApproved"
-          :itemsCount="getTotalCount"
-          :itemsTotalPrice="getTotalSum"
-        ></TheSubtotal>
+
+      <TheTotalPrice
+        :installation="isInstallationApproved"
+        :itemsCount="totalCount"
+        :itemsTotalPrice="totalSum"
+      ></TheTotalPrice>
+    </div>
+    <img src="/images/arrowleft.png" />
+    <!-- Пагинация и тайтл два разных бем блока +++++++++++++-->
+    <div class="recommended">
+      <h2 class="recommended-title">Просмотренные товары</h2>
+
+      <div class="recommended-pagination">
+        <button class="recommended-pagination__btns">
+          <img src="/images/arrowleft.png" />
+        </button>
+        <!-- стрелочка свгшка сам элемент кнопка с бордером и фоном ++++++++++++++++===-->
+        <div class="recommended-pagination__pages">
+          <span class="recommended-pagination__pages--current">1</span>
+          <span class="recommended-pagination__pages--padding">/</span>
+          6
+        </div>
+        <button class="recommended-pagination__btns">
+          <img src="/images/arrowright.png" />
+        </button>
       </div>
     </div>
-    <div class="products-header">
-      <h2 class="products-header__title">Просмотренные товары</h2>
-      <div class="products-header__title--pages">
-        <img src="/images/arrowleft.svg" />
-        <div class="products-header__title--pages">
-          1 <span class="products-header__title--pages-at-all">/</span>
-          <span class="products-header__title--pages-at-all">6</span>
-        </div>
-        <img src="/images/arrowright.svg" />
-      </div>
-    </div>
-    <div class="products-cards">
-      <!-- PiniaUsage -->
 
+    <div class="recommended-cards">
       <TheProductCard
-        v-for="card in getProductsFromStore"
+        v-for="card in viewedProducts"
         :image="card.img"
         :description="card.description"
         :part-number="card.partNumber"
@@ -89,100 +95,37 @@
 </template>
 
 <script>
+import { mapState } from "pinia";
+import { mapActions } from "pinia";
 import { useProductStore } from "./stores/store";
+
+import { declineNoun } from "./utils/nounDeclension";
+
 export default {
   data() {
     return {
-      itemsTotal: 1,
-      total: 1,
       isInstallationApproved: false,
-      basket: null,
-      products: null,
-      card: [
-        {
-          cardId: 1,
-          price: 12644,
-          totalCount: 1,
-          totalPrice: 12644,
-          img: "hood1.png",
-        },
-        {
-          cardId: 2,
-          price: 12644,
-          totalCount: 1,
-          totalPrice: 12644,
-          img: "hood2.png",
-        },
-        {
-          cardId: 3,
-          price: 12644,
-          totalCount: 1,
-          totalPrice: 12644,
-          img: "hood3.png",
-        },
-      ],
     };
   },
   methods: {
-    getIncreasedCount(items) {
-      this.itemsTotal = items + 1;
-    },
-    getDecreasedCount(items) {
-      this.itemsTotal = items - 1;
-    },
-    getTotalPerCardByIncrease(card) {
-      card.totalCount++;
-    },
-    getTotalPerCardByDecrease(card) {
-      card.totalCount =
-        card.totalCount <= 1 ? card.totalCount : card.totalCount - 1;
-    },
+    ...mapActions(useProductStore, ["cleanTheCart"]),
+
     changeInstallationStatus() {
       this.isInstallationApproved = !this.isInstallationApproved;
     },
   },
   computed: {
-    getProductsFromStore() {
-      const store = useProductStore();
-      this.products = store.products;
-      return store.products;
-    },
-    getBasketFromStore() {
-      const store = useProductStore();
-      this.basket = store.basket;
-      return store.basket;
-    },
-    getTotalSum() {
-      let i = 0;
-      return this.card.reduce(function (accumulator, currentValue) {
-        return accumulator + currentValue.price * currentValue.totalCount;
-      }, i);
-    },
-    getTotalCount() {
-      let i = 0;
-      return this.card.reduce(function (accumulator, currentValue) {
-        return accumulator + currentValue.totalCount;
-      }, i);
-    },
-    getNoun() {
-      let n = Math.abs(this.getTotalCount);
-      n %= 100;
-      if (n >= 5 && n <= 20) {
-        return "товаров";
-      }
-      n %= 10;
-      if (n === 1) {
-        return "товар";
-      }
-      if (n >= 2 && n <= 4) {
-        return "товара";
-      }
-      return "товаров";
-    },
+    ...mapState(useProductStore, [
+      "cartItems",
+      "viewedProducts",
+      "totalSum",
+      "totalCount",
+    ]),
+
     changeClass() {
       return this.isInstallationApproved
-        ? "wrapper__installation-btn--active"
-        : "wrapper__installation-btn";
+        ? "cart__installation-btn--active"
+        : "cart__installation-btn";
     },
   },
 };
@@ -192,69 +135,75 @@ export default {
 @import "./assets/fonts/fonts.css";
 
 .wrapper {
-  max-width: min-content;
+  width: 1200px;
   margin: auto;
-  .wrapper__item-installation {
-    display: flex;
-    background-color: rgba(246, 248, 250, 1);
-    border-radius: 5px;
-    padding: 25px;
-    align-items: center;
-    margin-bottom: 80px;
-    .wrapper__installation-typography {
-      font-family: "Lato Regular", sans-serif;
-      font-size: 16px;
-      color: rgba(31, 36, 50, 1);
-      line-height: 21px;
-    }
-    .wrapper__installation-typography--grey {
-      color: rgba(121, 123, 134, 1);
-      font-size: 14px;
-    }
-  }
-  .wrapper__installation-btn {
-    padding: 10px;
-    width: 20px;
-    height: 20px;
-    margin-right: 20px;
-    background-color: #fff;
-    border: 1px solid rgba(121, 123, 134, 1);
-    border-radius: 2px;
+}
+.cart___installation {
+  display: flex;
+  background-color: rgba(246, 248, 250, 1);
+  border-radius: 5px;
+  padding: 25px;
+  align-items: center;
+  margin-bottom: 80px;
+  cursor: pointer;
+  .cart__installation-typography {
+    font-size: 16px;
+    color: rgba(31, 36, 50, 1);
+    line-height: 21px;
     cursor: pointer;
-    box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.08);
   }
-  .wrapper__installation-btn:hover {
-    background-color: rgb(14, 124, 202);
-    border: 1px solid rgb(14, 124, 202);
-  }
-  .wrapper__installation-btn--active {
-    background-color: rgb(14, 124, 202);
-    border: 1px solid rgb(14, 124, 202);
-
-    padding: 10px;
-    width: 20px;
-    height: 20px;
-    margin-right: 20px;
-    border-radius: 2px;
-    cursor: pointer;
-    box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.08);
-  }
-  .wrapper__installation-img {
-    margin-right: 20px;
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 5px;
-  }
-  .wrapper__basket-contnet {
-    margin-right: 50px;
+  .cart__installation-typography--grey {
+    color: rgba(121, 123, 134, 1);
+    font-size: 14px;
   }
 }
-.wrapper__content {
+.cart__installation-btn {
+  padding: 10px;
+  width: 20px;
+  height: 20px;
+  margin-right: 20px;
+  background-color: #fff;
+  border: 1px solid rgba(121, 123, 134, 1);
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.08);
+}
+.cart__installation-btn:hover {
+  background-color: rgb(14, 124, 202);
+  border: 1px solid rgb(14, 124, 202);
+}
+.cart__installation-btn--active {
+  background-color: rgb(14, 124, 202);
+  border: 1px solid rgb(14, 124, 202);
+
+  padding: 10px;
+  width: 20px;
+  height: 20px;
+  margin-right: 20px;
+  border-radius: 2px;
+  cursor: pointer;
+  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.08);
+}
+.cart__installation-img {
+  margin-right: 20px;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 5px;
+}
+.cart {
+  margin-right: 50px;
+}
+.cart-wrapper {
+  font-family: "Lato Regular", sans-serif;
+
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.wrapper__breadcrumbs {
+.cart__installation-label {
+  display: flex;
+}
+.breadcrumbs {
   font-family: "Lato Regular", sans-serif;
   font-size: 14px;
   line-height: 21px;
@@ -263,12 +212,36 @@ export default {
   line-height: 20px;
   img {
     margin-right: 10px;
+    margin-left: 10px;
+  }
+  ul {
+    display: flex;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    list-style-type: none;
   }
 }
-.wrapper__breadcrumbs-text {
-  margin-right: 10px;
+
+.breadcrumbs-text {
+  margin-right: 20px;
+  position: relative;
 }
-.wrapper__breadcrumbs-text--active {
+.breadcrumbs-text::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-left: 4px solid #555;
+  border-bottom: 4px solid transparent;
+  position: absolute;
+  transform: translate(10px, 7px);
+}
+.breadcrumbs-text:last-child::after {
+  display: none;
+}
+.breadcrumbs-text--active {
   color: rgba(121, 123, 134, 1);
 }
 .card__content {
@@ -277,80 +250,94 @@ export default {
 .card__btn-group {
   margin-right: 80px;
 }
-.title {
+.cart__header {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-
+  font-family: "Lato Regular", sans-serif;
   margin-bottom: 40px;
 }
-.title__items--flex {
+.cart__count {
+  font-weight: 400;
+  color: #797b86;
+  margin-left: 20px;
+}
+.cart__wrap {
   display: flex;
   align-items: baseline;
 }
-.title__items---header-typography {
-  color: rgba(31, 36, 50, 1);
-  font-family: "Lato Regular", sans-serif;
-  font-size: 44px;
-  font-weight: 700;
-  margin-right: 20px;
-}
-.title__items--count-typography {
-  font-family: "Lato Regular", sans-serif;
+
+.cart__items--count-typography {
   font-size: 18px;
   font-weight: 400;
   line-height: 26px;
   color: rgba(121, 123, 134, 1);
 }
-.title__items--clean-typography {
-  font-family: "Lato Regular", sans-serif;
+.cart__items--clean {
   font-size: 14px;
   font-weight: 400;
   line-height: 21px;
-  color: rgba(121, 123, 134, 1);
+  color: rgb(121, 123, 134);
   text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
-.products-header {
+.recommended {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.products-header__title {
+.recommended-title {
   font-family: "Lato Regular", sans-serif;
   font-size: 30px;
   color: rgba(31, 36, 50, 1);
   margin-bottom: 70px;
 }
-.products-header__title--pages {
+.recommended-pagination {
   margin: 0;
   display: flex;
   align-items: center;
   font-family: "Lato Regular", sans-serif;
+  font-size: 20px;
+  color: #797b86;
+}
+.recommended-pagination__pages {
+  padding: 0 20px;
+}
+.recommended-pagination__pages--current {
   font-size: 24px;
   color: #212121;
-  padding: 0 15px;
 }
-.products-header__title--pages-at-all {
-  font-size: 20px;
-  display: inline-block;
-  color: #797b86;
+.recommended-pagination__pages--padding {
   padding-left: 10px;
+  padding-right: 10px;
 }
-.products-header__card-container {
-  display: flex;
-  width: 300px;
+.recommended-pagination__btns {
+  background-color: #90a2b5;
+  border-radius: 50%;
+  border: none;
+  padding: 16px 22px;
 }
-.products-cards {
+
+.recommended-cards {
   display: flex;
   margin-bottom: 100px;
   column-gap: 20px;
 }
+.title {
+  color: rgba(31, 36, 50, 1);
+  font-family: "Lato Regular", sans-serif;
+  font-size: 44px;
+  font-weight: 700;
+}
 @media screen and (max-width: 992px) {
   .wrapper {
-    min-width: auto;
+    min-width: 768;
+    max-width: 1199px;
     margin: 0 20px;
   }
-  .wrapper__content {
+  .cart-wrapper {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;

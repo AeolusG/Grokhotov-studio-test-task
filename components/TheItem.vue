@@ -1,6 +1,6 @@
 <template>
   <div class="card">
-    <img :src="`/images/${image}`" />
+    <img class="card-img" :src="`/images/${item.img}`" />
 
     <div class="card__content">
       <h3 class="card__content-title">Вытяжное устройство G2H</h3>
@@ -12,79 +12,48 @@
     <div>
       <div class="card__btn-group">
         <button
-          class="card__btn-group--minus"
-          @click="decreaseItems(itemsCount)"
+          class="card__btn card__btn-group--minus"
+          @click="removeItemFromCart(item)"
         ></button>
-        <div>{{ itemsCount }}</div>
+        <div class="card__count">{{ item.totalCount }}</div>
         <button
-          class="card__btn-group--plus"
-          @click="increaseItems(itemsCount)"
+          class="card__btn card__btn-group--plus"
+          @click="addItemToCart(item)"
         ></button>
-      </div>
-
-      <div class="card__price-per-item" v-show="showThePrice">
-        {{ makeLocaled }} ₽/шт.
+        <div class="card__price-per-item" v-show="showThePrice">
+          {{ item.price.toLocaleString("ru-RU") }} ₽/шт.
+        </div>
       </div>
     </div>
 
-    <div class="card__price">{{ getPrice }}₽</div>
+    <div class="card__price">
+      {{ item.totalPrice.toLocaleString("ru-RU") }} ₽
+    </div>
+    <button class="card-remove" @click="removePosition(item)"></button>
   </div>
 </template>
 
 <script>
+import { mapActions } from "pinia";
+import { useProductStore } from "../stores/store";
+
 export default {
   props: {
-    title: {
-      type: String,
+    item: {
+      type: Object,
       default: null,
     },
-    description: {
-      type: String,
-      default: null,
-    },
-    partNumber: {
-      type: String,
-      default: null,
-    },
-    price: {
-      type: Number,
-      default: null,
-    },
-    pricePerItem: {
-      type: Number,
-      default: null,
-    },
-    image: {
-      type: String,
-      default: null,
-    },
-  },
-  data() {
-    return {
-      itemsCount: 1,
-    };
   },
   methods: {
-    increaseItems(count) {
-      this.itemsCount++;
-      this.$emit("getIncreased", count);
-    },
-    decreaseItems(count) {
-      this.itemsCount = count <= 1 ? count : this.itemsCount - 1;
-      this.$emit("getDecreased", count);
-    },
+    ...mapActions(useProductStore, [
+      "addItemToCart",
+      "removeItemFromCart",
+      "removePosition",
+    ]),
   },
   computed: {
-    getPrice() {
-      let currentPrice = this.price * this.itemsCount;
-
-      return currentPrice.toLocaleString("ru-RU");
-    },
-    makeLocaled() {
-      return this.pricePerItem.toLocaleString("ru-RU");
-    },
     showThePrice() {
-      return Boolean(this.itemsCount > 1);
+      return Boolean(this.item.totalCount > 1);
     },
   },
 };
@@ -100,6 +69,7 @@ export default {
   border-bottom: 1px solid rgba(196, 196, 196, 1);
   padding-bottom: 20px;
   margin-bottom: 20px;
+  font-family: "Lato Bold", sans-serif;
 }
 .card__content {
   width: 300px;
@@ -108,66 +78,81 @@ export default {
   display: flex;
   align-items: center;
   position: relative;
+  justify-content: center;
 
-  div {
+  .card__count {
     background: rgb(246, 248, 250);
     color: rgb(51, 55, 78);
-    padding: 8px;
+    padding: 8px 12px;
     margin: 5px;
-    width: 20px;
     text-align: center;
-  }
-  button {
-    border: none;
-    background: rgb(246, 248, 250);
-    color: rgb(51, 55, 78);
-    font-size: 30px;
-    padding: 10px;
-    height: 34px;
-    width: 34px;
-    cursor: grab;
-  }
-  .card__btn-group--minus {
-    background-image: url("/images/minus.svg");
-    background-repeat: no-repeat;
-    background-position: center;
-  }
-  .card__btn-group--plus {
-    background-image: url("/images/plus.svg");
-    background-repeat: no-repeat;
-    background-position: center;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 40px;
   }
 }
+.card__btn {
+  border: none;
+  background: rgb(246, 248, 250);
+  color: rgb(51, 55, 78);
+  font-size: 30px;
+  padding: 10px;
+  height: 34px;
+  width: 34px;
+  cursor: grab;
+}
+.card__btn-group--plus {
+  background-image: url("/images/plus.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.card__btn-group--minus {
+  background-image: url("/images/minus.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+}
 .card__price-per-item {
-  font-family: "Roboto", serif;
+  background-color: white;
   font-size: 12px;
   font-weight: 400;
   position: absolute;
-  padding-left: 30px;
+  top: 40px;
+}
+.card-img {
+  max-width: 100px;
 }
 .card__description {
-  font-family: "Lato Regular", sans-serif;
   font-size: 12px;
   font-weight: 400;
   line-height: 17px;
   margin-bottom: 20px;
 }
 .card__content-title {
-  font-family: "Lato Regular", sans-serif;
   font-size: 16px;
   font-weight: 600;
   line-height: 23px;
 }
 .card__price {
-  font-family: "Lato Bold", sans-serif;
   font-size: 18px;
   line-height: 26px;
+  padding: 0 30px;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .card__article {
-  font-family: "Lato Bold", sans-serif;
   font-size: 14px;
   font-weight: 400;
   line-height: 21px;
   color: rgba(121, 123, 134, 1);
+}
+.card-remove {
+  background: none;
+  border: none;
+  background-image: url("/images/close.png");
+  background-repeat: no-repeat;
+  padding: 12px;
+  margin-bottom: auto;
+  cursor: pointer;
 }
 </style>

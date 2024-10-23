@@ -1,14 +1,14 @@
 <template>
-  <div class="card-wrapper">
-    <img :src="`/images/${image}`" />
+  <article class="card-wrapper">
+    <img class="card-img" :src="`/images/${image}`" />
     <h3 class="card-wrapper__title">{{ partNumber }}</h3>
     <p class="card-description">{{ description }}</p>
     <div class="card-price">
       <p class="card-price__rubles">{{ price }}</p>
       <p class="card-price__euros">{{ priceInEuro }}</p>
     </div>
-    <button class="card-button">Подробнее</button>
-  </div>
+    <button type="button" class="card-button">Подробнее</button>
+  </article>
 </template>
 
 <script>
@@ -39,7 +39,6 @@ export default {
       default: null,
     },
   },
-  computed: {},
 };
 </script>
 
@@ -49,7 +48,6 @@ export default {
 .card-wrapper {
   background-color: #f6f8fa;
   padding: 25px;
-  margin-right: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -72,6 +70,14 @@ export default {
   font-family: "Lato Regular", sans-serif;
   font-size: 18px;
   font-weight: 600;
+  cursor: pointer;
+}
+.card-img {
+  max-width: 250px;
+}
+.card-button:hover {
+  background-color: rgb(14, 124, 202);
+  transition: 0.2s ease;
 }
 .card-price {
   margin-top: 20px;
@@ -110,10 +116,7 @@ export default {
     flex-direction: column;
     max-width: min-content;
     margin-bottom: 50px;
-  }
-  .products-cards {
     flex-wrap: wrap;
-    justify-content: space-around;
   }
 }
 </style>
