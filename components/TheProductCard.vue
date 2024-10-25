@@ -1,13 +1,13 @@
 <template>
-  <article class="card-wrapper">
-    <img class="card-img" :src="`/images/${image}`" />
-    <h3 class="card-wrapper__title">{{ partNumber }}</h3>
-    <p class="card-description">{{ description }}</p>
-    <div class="card-price">
-      <p class="card-price__rubles">{{ price }}</p>
-      <p class="card-price__euros">{{ priceInEuro }}</p>
+  <article class="card">
+    <img class="card__img" :src="`/images/${image}`" />
+    <h3 class="card__title">{{ partNumber }}</h3>
+    <p class="card__description">{{ description }}</p>
+    <div class="card__price">
+      <p class="card__price card__price--rubles">{{ price }}</p>
+      <p class="card__price card__price--euros">{{ priceInEuro }}</p>
     </div>
-    <button type="button" class="card-button">Подробнее</button>
+    <button type="button" class="card__button">Подробнее</button>
   </article>
 </template>
 
@@ -42,81 +42,71 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-@import "../assets/fonts/fonts.css";
-
-.card-wrapper {
-  background-color: #f6f8fa;
-  padding: 25px;
+<style scoped>
+.card {
   display: flex;
   flex-direction: column;
+
+  background-color: #f6f8fa;
+  padding: 25px;
 }
-.card-wrapper__title {
-  font-family: "Lato Regular", sans-serif;
+
+.card__title {
   font-size: 30px;
   color: rgba(31, 36, 50, 1);
+
   margin: 0;
 }
 .products-wrapper__pagination {
   display: flex;
   align-items: center;
 }
-.card-button {
-  background-color: rgb(0, 105, 180);
-  color: #fff;
+.card__button {
   border-radius: 4px;
   border: none;
   padding: 14px 40px;
-  font-family: "Lato Regular", sans-serif;
+
+  background-color: rgb(0, 105, 180);
+  color: #fff;
   font-size: 18px;
   font-weight: 600;
+
   cursor: pointer;
 }
-.card-img {
+.card__img {
   max-width: 250px;
 }
 .card-button:hover {
   background-color: rgb(14, 124, 202);
   transition: 0.2s ease;
 }
-.card-price {
+.card__price {
   margin-top: 20px;
 }
-.card-description {
+.card__description {
   flex-grow: 1;
-  font-family: "Lato Regular", sans-serif;
+
   font-size: 14px;
   font-weight: 400;
   color: #1f2432;
   line-height: 20px;
 }
 
-.card-price__rubles {
-  font-family: "Lato Regular", sans-serif;
+.card__price--rubles {
   font-size: 22px;
   font-weight: 600;
   color: #1f2432;
+
   margin: 0;
+  margin-bottom: 15px;
 }
 
-.card-price__euros {
-  font-family: "Lato Regular", sans-serif;
+.card__price--euros {
   font-size: 16px;
   font-weight: 400;
   color: #797b86;
+
   margin: 0;
   margin-bottom: 20px;
-}
-
-@media screen and (max-width: 992px) {
-  .card-wrapper {
-    background-color: #f6f8fa;
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    max-width: min-content;
-    margin-bottom: 50px;
-    flex-wrap: wrap;
-  }
 }
 </style>

@@ -10,6 +10,7 @@
     </div>
   </header>
 </template>
+
 <script>
 import { declineNoun } from "../utils/nounDeclension";
 
@@ -27,25 +28,25 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-@import "../assets/fonts/fonts.css";
-
+<style scoped>
 .header {
-  margin: 30px 75px;
   display: flex;
   justify-content: flex-end;
+
+  margin: 30px 75px;
 }
 .cart-info {
   background-image: url("/images/Cart.svg");
   background-position-x: left;
   background-repeat: no-repeat;
   background-position-y: center;
-  font-family: "Lato Regular", sans-serif;
+
+  padding-left: 40px;
+
   font-size: 12px;
   font-weight: 400;
   line-height: 17px;
   color: rgb(31, 36, 50);
-  padding-left: 40px;
 }
 
 .cart-info__count {

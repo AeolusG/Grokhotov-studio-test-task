@@ -2,7 +2,6 @@ export const declineNoun = (number: number, words: Array<any>) => {
   let n = Math.abs(number);
   n %= 100;
   if (n >= 5 && n <= 20) {
-    console.log(words?.[2]);
     return words?.[2];
   }
   n %= 10;

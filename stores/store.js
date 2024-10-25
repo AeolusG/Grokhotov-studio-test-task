@@ -7,44 +7,70 @@ export const useProductStore = defineStore("ProductStore", {
     return {
       cart,
       products,
+      alert: {
+        isShown: false,
+        status: "null",
+        text: "null",
+      },
     };
   },
   getters: {
-    cartItems(state) {
-      return state.cart;
-    },
-    viewedProducts(state) {
-      return state.products;
-    },
     totalSum(state) {
-      let i = 0;
-      return state.cart.reduce(function (accumulator, currentValue) {
-        return accumulator + currentValue.price * currentValue.totalCount;
-      }, i);
+      return state.cart.reduce(function (acc, currentProductInCart) {
+        return (
+          acc + currentProductInCart.price * currentProductInCart.totalCount
+        );
+      }, 0);
     },
+
     totalCount(state) {
-      let i = 0;
-      return state.cart.reduce(function (accumulator, currentValue) {
-        return accumulator + currentValue.totalCount;
-      }, i);
+      return state.cart.reduce(function (acc, currentProductInCart) {
+        return acc + currentProductInCart.totalCount;
+      }, 0);
     },
   },
+
   actions: {
-    addItemToCart(item) {
-      item.totalCount++;
-      item.totalPrice = item.price * item.totalCount;
+    addItemToCart(product) {
+      product.totalCount += 1;
+      product.totalPrice = product.price * product.totalCount;
     },
-    removeItemFromCart(item) {
-      item.totalCount =
-        item.totalCount <= 1 ? item.totalCount : item.totalCount - 1;
-      item.totalPrice = item.price * item.totalCount;
+
+    removeItemFromCart(product) {
+      product.totalCount -= 1;
+
+      if (product.totalCount === 0) {
+        this.cart = this.cart.filter((item) => item.cardId !== product.cardId);
+      } else {
+        product.totalPrice = product.price * product.totalCount;
+      }
     },
-    cleanTheCart() {
-      console.log(this.cart);
+
+    cleanCart() {
       this.cart = [];
     },
-    removePosition(position) {
-      this.cart = this.cart.filter((item) => item.cardId !== position.cardId);
+
+    removePosition(product) {
+      this.cart = this.cart.filter((item) => item.cardId !== product.cardId);
+    },
+
+    async submitPurchase() {
+      await $fetch("/api/submit", {
+        method: "post",
+        body: this.cart,
+      });
+    },
+
+    showAlert(payload) {
+      this.alert = payload;
+    },
+
+    closeAlert() {
+      this.alert = {
+        isShown: false,
+        status: null,
+        text: null,
+      };
     },
   },
 });
