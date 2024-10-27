@@ -9,8 +9,8 @@ export const useProductStore = defineStore("ProductStore", {
       products,
       alert: {
         isShown: false,
-        status: "null",
-        text: "null",
+        status: null,
+        text: null,
       },
     };
   },

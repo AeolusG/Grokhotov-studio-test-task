@@ -76,7 +76,7 @@ export default {
 .card__img {
   max-width: 250px;
 }
-.card-button:hover {
+.card__button:hover {
   background-color: rgb(14, 124, 202);
   transition: 0.2s ease;
 }

@@ -3,7 +3,7 @@
     <div class="subtotal__title">Итого</div>
     <div class="subtotal__info">
       <div>Сумма заказа</div>
-      <div>{{ makeLocaled }} ₽</div>
+      <div>{{ itemsTotalPrice.toLocaleString("ru-RU") }} ₽</div>
     </div>
     <div class="subtotal__info">
       <div>Количество</div>
@@ -20,10 +20,20 @@
       </div>
     </div>
     <div class="subtotal__btn-group">
-      <button type="button" @click="completePurchase" class="subtotal__btn">
+      <button
+        :disabled="cart.length === 0"
+        type="button"
+        @click="completePurchase"
+        class="subtotal__btn"
+        :class="cart.length > 0 ? '' : 'subtotal__btn--disabled'"
+      >
         Оформить заказ
       </button>
-      <button type="button" @click="completePurchase" class="subtotal__btn">
+      <button
+        :disabled="cart.length === 0"
+        type="button"
+        class="subtotal__btn subtotal__btn--colors"
+      >
         Купить в 1 клик
       </button>
     </div>
@@ -32,6 +42,7 @@
 
 <script>
 import { mapActions } from "pinia";
+import { mapState } from "pinia";
 import { useProductStore } from "../stores/store";
 
 import Status from "../utils/alertStatus";
@@ -72,6 +83,10 @@ export default {
         });
       }
     },
+  },
+
+  computed: {
+    ...mapState(useProductStore, ["cart"]),
   },
 };
 </script>
@@ -116,10 +131,6 @@ export default {
 }
 .subtotal__btn {
   margin-bottom: 10px;
-
-  cursor: pointer;
-}
-.subtotal__btn:nth-child(1) {
   background-color: rgba(0, 105, 180, 1);
   color: #fff;
 
@@ -129,24 +140,34 @@ export default {
 
   font-size: 18px;
   font-weight: 600;
-}
-.subtotal__btn:nth-child(1):hover {
-  background-color: rgb(14, 124, 202);
+  cursor: pointer;
+
   transition: 0.2s ease;
+
+  &:hover {
+    background-color: rgb(14, 124, 202);
+    transition: 0.2s ease;
+  }
 }
-.subtotal__btn:nth-child(2) {
+
+.subtotal__btn--colors {
   color: rgba(0, 105, 180, 1);
   background-color: #fff;
 
-  border-radius: 4px;
   border: 1px solid rgba(0, 105, 180, 1);
-  padding: 14px 40px;
 
-  font-size: 18px;
-  font-weight: 600;
+  &:hover {
+    background-color: rgba(0, 105, 180, 1);
+    color: #fff;
+  }
+
+  &:disabled {
+    color: white;
+  }
 }
-.subtotal__btn:nth-child(2):hover {
-  color: rgb(57, 157, 228);
-  transition: 0.2s ease;
+.subtotal__btn:disabled {
+  background-color: #90a2b5;
+  color: white;
+  cursor: default;
 }
 </style>
