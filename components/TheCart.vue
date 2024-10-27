@@ -10,11 +10,7 @@
             {{ declineNoun(totalCount, ["товар", "товара", "товаров"]) }}
           </div>
         </div>
-        <button
-          type="button"
-          class="cart__products-count cart__products-count--clean"
-          @click="cleanCart"
-        >
+        <button type="button" class="cart__clean-btn" @click="cleanCart">
           Очистить корзину
         </button>
       </div>
@@ -27,12 +23,16 @@
           id="installation"
           name="installation"
           v-model="isInstallationApproved"
-          :class="changeClass"
+          class="cart__installation-input"
           @input="this.isInstallationApproved = !this.isInstallationApproved"
         />
 
         <label for="installation" class="cart__installation-label">
-          <img class="cart__installation-img" src="/images/instruments.svg" />
+          <img
+            class="cart__installation-img"
+            src="/images/instruments.svg"
+            alt="instruments"
+          />
 
           <div class="cart__installation-typography">
             <div>Установка</div>
@@ -62,6 +62,7 @@ import { mapActions } from "pinia";
 import { useProductStore } from "../stores/store";
 
 import { declineNoun } from "../utils/nounDeclension";
+
 export default {
   data() {
     return {
@@ -95,12 +96,6 @@ export default {
       "totalSum",
       "totalCount",
     ]),
-
-    changeClass() {
-      return this.isInstallationApproved
-        ? "cart__installation-btn--active"
-        : "cart__installation-btn";
-    },
   },
 };
 </script>
@@ -127,17 +122,15 @@ export default {
   border-radius: 5px;
   padding: 25px;
   margin-bottom: 80px;
+  padding-left: 65px;
 
   background-color: rgba(246, 248, 250, 1);
-  cursor: pointer;
 }
 
 .cart__installation-typography {
   font-size: 16px;
   color: rgba(31, 36, 50, 1);
   line-height: 21px;
-
-  cursor: pointer;
 }
 
 .cart__installation-typography--grey {
@@ -145,40 +138,8 @@ export default {
   font-size: 14px;
 }
 
-.cart__installation-btn {
-  padding: 10px;
-  width: 20px;
-  height: 20px;
-  margin-right: 20px;
-
-  background-color: #fff;
-  border: 1px solid rgba(121, 123, 134, 1);
-  border-radius: 2px;
-  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.08);
-
-  cursor: pointer;
-}
-
-.cart__installation-btn:hover {
-  background-color: rgb(14, 124, 202);
-  border: 1px solid rgb(14, 124, 202);
-}
-
-.cart__installation-btn--active {
-  background-color: rgb(14, 124, 202);
-  border: 1px solid rgb(14, 124, 202);
-  border-radius: 2px;
-  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.08);
-
-  padding: 10px;
-  width: 20px;
-  height: 20px;
-  margin-right: 20px;
-
-  cursor: pointer;
-}
-
 .cart__installation-img {
+  align-self: flex-start;
   margin-right: 20px;
   padding: 10px;
 
@@ -187,17 +148,54 @@ export default {
 }
 
 .cart {
-  margin-right: 50px;
+  width: 800px;
 }
 
 .cart-wrapper {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
-
+.cart__installation-input {
+  display: none;
+}
 .cart__installation-label {
   display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.cart__installation-label::before {
+  content: "";
+  position: absolute;
+  padding: 10px;
+  margin-right: 20px;
+
+  background-color: #fff;
+  border: 1px solid rgba(121, 123, 134, 1);
+  border-radius: 2px;
+  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.08);
+  top: 13px;
+  left: -41px;
+}
+
+.cart__installation-label::after {
+  content: "";
+  position: absolute;
+  display: none;
+  width: 8px;
+  height: 8px;
+  background-color: #0069b4;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  top: 24px;
+  left: -30px;
+}
+
+.cart__installation-input:checked + label::after {
+  display: block;
 }
 
 .card__content {
@@ -228,16 +226,21 @@ export default {
   align-items: baseline;
 }
 
-.cart__products-count--clean {
+.cart__clean-btn {
   font-size: 14px;
   font-weight: 400;
   line-height: 21px;
+  color: #797b86;
   text-decoration: underline;
 
   background: none;
   border: none;
 
   cursor: pointer;
+
+  &:hover {
+    color: #c1c2c5;
+  }
 }
 
 .viewed-cards {
