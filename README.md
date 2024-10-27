@@ -1,7 +1,8 @@
 
 # Пример страницы онлайн-магазина автомобилей
 
-![Иллюстрация к проекту](https://github.com/AeolusG/Grokhotov-studio-test-task/raw/main/public/images/screenshot.png)
+![Иллюстрация к проекту](https://github.com/AeolusG/Grokhotov-studio-test-task/raw/master/public/images/screenshot.png)
+
 
 Задачи:
 - вывод товаров и их удаление
