@@ -1,10 +1,41 @@
-# Nuxt Minimal Starter
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+# Пример страницы онлайн-магазина автомобилей
 
-## Setup
+![Иллюстрация к проекту](https://github.com/AeolusG/Grokhotov-studio-test-task/raw/main/public/images/screenshot.png)
 
-Make sure to install dependencies:
+Задачи:
+- вывод товаров и их удаление
+- реализовать кнопочки увеличения/уменьшения кол-ва
+- динамические подсчет стоимости заказа, количества товаров, наличие установки, в зависимости от состояния чек-бокса
+- в шапке выводить кол-во товаров и стоимость заказа
+- реализовать слайдер с товарами (Swiper.js)
+- при нажатии “оформить заказ” реализовать отправку на сервер (в том виде, в каком считаете нужным). Реализация через сервер встроенный в Nuxt 3 - будет плюсом.
+
+Было выполнено:
+- верстка по макету
+- вывод товаров и их удаление
+- реализация кнопок увеличения\уменьшения кол-ва, уменьшение до нуля автоматически удаляет товар из корзины
+- динамический подсчет стоимости заказа всего, отображение стоимости нескольких товаров одной марки в зависимости от их количества в корзине
+- вывод в шапке количества товаров и итоговая стоимость
+- реализован слайдер с помощью библиотеки Swiper.js, который запускается автоматически через 8 секунд
+- реализована отправка на сервер, встроенный в Nuxt 3, при отправке появляется алерт с уведомлением об успешном оформлении заказа
+- блокировка кнопок "отправить" и "купить в 1 клик" в случае, если корзина пустая 
+
+Технологии:
+- Vue3
+- Nuxt3
+- pinia
+- HTML
+- CSS
+- БЭМ
+- Swiper.js
+- 
+## Ссылка на Netlify
+
+https://gilded-fox-bced6c.netlify.app/
+
+## Установка зависимостей
+
 
 ```bash
 # npm
@@ -18,58 +49,3 @@ yarn install
 
 # bun
 bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
